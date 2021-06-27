@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(RoomAgent::class, RoomAbility::class, RoomRole::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(RoomAgent::class, RoomAbility::class, RoomRole::class), version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 public abstract class ValorantRoomDatabase : RoomDatabase() {
 
@@ -42,7 +42,7 @@ public abstract class ValorantRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     ValorantRoomDatabase::class.java,
                     "word_database"
-                ).addCallback(WordDatabaseCallback(scope)).build()
+                ).addCallback(WordDatabaseCallback(scope)).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 // return instance
                 instance

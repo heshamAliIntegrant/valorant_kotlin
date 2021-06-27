@@ -1,8 +1,11 @@
 package com.example.valorant_agents.features.agentsList.ViewModel
 
 import android.util.Log
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.example.roomwordsample.Entities.toDtoList
 import com.example.valorant_agents.features.agentsList.Models.Agent
 import com.example.valorant_agents.features.agentsList.Repo.AgentsRepo
 import io.reactivex.BackpressureStrategy
@@ -20,10 +23,18 @@ class AgentListViewModel(private val agentsRepo: AgentsRepo): ViewModel() {
     val observableAgents: Observable<List<Agent>> get() = agentsSubject.observeOn(AndroidSchedulers.mainThread()).hide()
 
     fun loadAgents() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val list = agentsRepo.loadAgentsRemotely()
-            agentsSubject.onNext(list)
-        }
+        agentsRepo.loadAgentsLocally().observeForever(Observer {
+            if(it.isEmpty()) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val agents: List<Agent> = agentsRepo.loadAgentsRemotely()
+                    agentsRepo.saveAgents(agents)
+                    agentsSubject.onNext(agents)
+                }
+            }
+            else {
+                agentsSubject.onNext(it.toDtoList())
+            }
+        })
     }
 
 

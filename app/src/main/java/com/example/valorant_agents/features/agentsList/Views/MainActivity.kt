@@ -3,6 +3,7 @@ package com.example.valorant_agents.features.agentsList.Views
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.valorant_agents.R
 import com.example.valorant_agents.application.ValorantApplication
@@ -12,6 +13,8 @@ import com.example.valorant_agents.features.agentsList.ViewModel.AgentListViewMo
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
